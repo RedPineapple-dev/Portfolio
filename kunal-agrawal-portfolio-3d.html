@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<!-- SEO -->
+<title>Kunal Agrawal — Software Engineer</title>
+<meta name="description" content="Kunal Agrawal is a Computer Science undergraduate and software engineer building API-driven, AI-powered, and distributed systems.">
+<meta name="author" content="Kunal Agrawal">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://kunal-agrawal.dev/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kunal-agrawal.dev/">
+<meta property="og:title" content="Kunal Agrawal — Software Engineer">
+<meta property="og:description" content="Kunal Agrawal is a Computer Science undergraduate and software engineer building API-driven, AI-powered, and distributed systems.">
+<meta property="og:image" content="https://kunal-agrawal.dev/og-image.png">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kunal Agrawal — Software Engineer">
+<meta name="twitter:description" content="Kunal Agrawal is a Computer Science undergraduate and software engineer building API-driven, AI-powered, and distributed systems.">
+
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#08070F">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Three.js & GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --bg:         #08070F;
+  --bg-alt:     #0E0C1B;
+  --bg-card:    rgba(255,255,255,0.032);
+  --text:       #F1EEFC;
+  --muted:      #8B85A8;
+  --accent:     #8C6FFF;
+  --accent2:    #FF8A5B;
+  --line:       rgba(241,238,252,0.09);
+  --radius:     16px;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;cursor:none}
+::selection{background:var(--accent);color:#08070F}
+a{color:inherit;text-decoration:none}
+
+/* Reduced motion */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.01ms!important;
+    animation-iteration-count:1!important;
+    transition-duration:0.01ms!important;
+  }
+  html{scroll-behavior:auto}
+}
+
+/* Touch — restore cursor */
+@media(pointer:coarse){
+  body{cursor:auto}
+  #cursorDot,#cursorRing{display:none}
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursorDot,#cursorRing{
+  position:fixed;top:0;left:0;pointer-events:none;z-index:9999;
+  border-radius:50%;transform:translate(-50%,-50%);
+}
+#cursorDot{width:6px;height:6px;background:var(--accent2)}
+#cursorRing{
+  width:34px;height:34px;border:1px solid rgba(140,111,255,.5);
+  transition:width .22s ease,height .22s ease,border-color .22s ease,background .22s ease;
+}
+#cursorRing.hover{width:58px;height:58px;background:rgba(140,111,255,.1);border-color:var(--accent)}
+#cursorRing.click{transform:translate(-50%,-50%) scale(.75);background:rgba(255,138,91,.15)}
+
+/* ============================================================
+   BACKGROUND CANVAS
+   ============================================================ */
+#bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.wrap{max-width:820px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+header.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(8,7,15,.62);backdrop-filter:blur(16px) saturate(1.4);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:820px;margin:0 auto;padding:18px 28px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px}
+.logo span{color:var(--accent2)}
+nav.links{display:flex;gap:26px}
+nav.links a{
+  font-size:13px;color:var(--muted);font-weight:500;
+  position:relative;padding-bottom:2px;transition:color .2s;
+}
+nav.links a::after{
+  content:'';position:absolute;left:0;bottom:-3px;
+  width:0;height:1px;background:var(--accent2);transition:width .25s;
+}
+nav.links a:hover{color:var(--text)}
+nav.links a:hover::after{width:100%}
+nav.links a:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
+
+#navToggle{
+  display:none;background:none;border:none;cursor:pointer;
+  width:32px;height:32px;padding:4px;
+  flex-direction:column;gap:5px;align-items:center;justify-content:center;
+}
+#navToggle span{display:block;width:20px;height:2px;background:var(--text);transition:transform .3s,opacity .3s}
+#navToggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#navToggle.open span:nth-child(2){opacity:0}
+#navToggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+#mobileNav{
+  display:none;position:fixed;inset:0;top:60px;z-index:99;
+  background:rgba(8,7,15,.97);backdrop-filter:blur(20px);
+  flex-direction:column;align-items:center;justify-content:center;gap:36px;
+}
+#mobileNav.open{display:flex}
+#mobileNav a{font-size:22px;color:var(--muted);font-weight:500;transition:color .2s}
+#mobileNav a:hover{color:var(--text)}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+section.hero{
+  min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+  padding-top:90px;position:relative;overflow:hidden;
+}
+.avatar-3d-wrap{
+  position:absolute;top:50%;right:-80px;transform:translateY(-50%);
+  width:440px;height:440px;z-index:1;pointer-events:none;
+}
+#avatarCanvas{
+  width:100%;height:100%;
+  filter:drop-shadow(0 0 60px rgba(140,111,255,.2));
+}
+.hero-inner{position:relative;z-index:2;max-width:460px}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--accent2);
+  display:flex;align-items:center;gap:8px;margin-bottom:20px;letter-spacing:.04em;
+}
+.dot-live{
+  width:7px;height:7px;border-radius:50%;background:#5FD37A;
+  box-shadow:0 0 0 4px rgba(95,211,122,.15);
+  animation:pulse-live 2s ease infinite;
+}
+@keyframes pulse-live{
+  0%,100%{box-shadow:0 0 0 4px rgba(95,211,122,.15)}
+  50%{box-shadow:0 0 0 8px rgba(95,211,122,.05)}
+}
+.hero-inner h1{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  letter-spacing:-1px;font-size:clamp(40px,7vw,64px);line-height:1.05;margin-bottom:16px;
+}
+.hero-inner h1 .grad{
+  background:linear-gradient(100deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.role-line{font-size:17px;color:var(--muted);margin-bottom:26px;font-weight:500}
+.cursor-blink{
+  display:inline-block;width:2px;height:16px;
+  background:var(--accent2);margin-left:2px;vertical-align:-3px;
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink{50%{opacity:0}}
+.hero-inner p{font-size:15.5px;line-height:1.8;color:var(--muted);max-width:440px;margin-bottom:4px}
+
+.avatar-badge{
+  display:inline-flex;align-items:center;gap:12px;
+  margin-top:34px;padding:9px 18px 9px 9px;
+  border:1px solid var(--line);border-radius:40px;
+  background:var(--bg-card);position:relative;
+  transition:border-color .25s,background .25s;
+}
+.avatar-badge:hover{border-color:rgba(140,111,255,.3);background:rgba(140,111,255,.05)}
+.avatar-initials{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:#08070F;
+}
+.avatar-badge span.lbl{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
+.avatar-tip{
+  position:absolute;bottom:calc(100% + 10px);left:8px;
+  background:var(--text);color:#08070F;
+  padding:6px 12px;border-radius:8px;
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12.5px;
+  white-space:nowrap;opacity:0;transform:translateY(6px);
+  pointer-events:none;transition:opacity .2s,transform .2s;
+}
+.avatar-badge:hover .avatar-tip{opacity:1;transform:translateY(0)}
+
+.stat-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.stat-chip{
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);
+  padding:7px 15px;border:1px solid var(--line);border-radius:20px;
+  background:var(--bg-card);transition:border-color .2s,color .2s;
+  white-space:nowrap;
+}
+.stat-chip:hover{border-color:rgba(140,111,255,.3);color:var(--text)}
+.stat-chip b{color:var(--text)}
+
+.scroll-hint{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);
+  display:flex;align-items:center;gap:10px;
+  white-space:nowrap;z-index:3;
+}
+.scroll-hint .bar{
+  width:1px;height:28px;background:linear-gradient(var(--accent),transparent);
+  animation:scrollmove 1.6s ease-in-out infinite;
+}
+@keyframes scrollmove{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+section{padding:112px 0;border-top:1px solid var(--line);position:relative}
+section.hero{border-top:none;position:relative}
+.sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:48px}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent2)}
+.sec-head h2{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:600;letter-spacing:-.3px}
+.reveal{opacity:0;transform:translateY(28px)}
+
+/* ============================================================
+   SKILLS
+   ============================================================ */
+.skill-group{margin-bottom:28px}
+.skill-label{
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{
+  font-size:13px;padding:6px 14px;
+  border:1px solid var(--line);border-radius:20px;
+  background:var(--bg-card);color:var(--muted);
+  transition:border-color .2s,color .2s,background .2s,transform .15s;
+}
+.chip:hover{
+  border-color:rgba(140,111,255,.35);color:var(--text);
+  background:rgba(140,111,255,.05);transform:translateY(-1px);
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.card{
+  border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--bg-card);padding:32px 34px;margin-bottom:20px;
+  transition:border-color .25s,background .25s,transform .25s;
+}
+.card:hover{border-color:rgba(140,111,255,.22);background:rgba(140,111,255,.04);transform:translateY(-2px)}
+.card-top{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:20px;gap:16px;
+}
+.card-title{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:17px}
+.card-sub{font-size:13.5px;color:var(--muted);margin-top:4px}
+.card-date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent2);white-space:nowrap;padding-top:4px}
+.card ul{list-style:none;padding:0}
+.card li{
+  font-size:14.5px;color:var(--muted);line-height:1.68;
+  padding:5px 0 5px 18px;position:relative;
+}
+.card li::before{content:'→';position:absolute;left:0;color:var(--accent2);font-size:11px;top:8px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tag{
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  padding:3px 10px;border-radius:4px;
+  background:rgba(140,111,255,.1);color:var(--accent);border:1px solid rgba(140,111,255,.2);
+}
+
+.achieve{
+  display:flex;align-items:center;gap:18px;margin-top:8px;
+  padding:20px 24px;border-radius:var(--radius);
+  border:1px solid rgba(255,220,60,.18);
+  background:rgba(255,220,60,.04);
+  transition:border-color .25s,background .25s;
+}
+.achieve:hover{border-color:rgba(255,220,60,.3);background:rgba(255,220,60,.07)}
+.trophy{font-size:24px}
+.achieve b{font-family:'Space Grotesk',sans-serif;font-size:15px;display:block;margin-bottom:3px}
+.achieve span{font-size:13px;color:var(--muted)}
+
+/* ============================================================
+   EDUCATION
+   ============================================================ */
+.edu-row{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  padding:26px 0;border-bottom:1px solid var(--line);
+}
+.edu-row:last-child{border-bottom:none}
+.deg{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15.5px;margin-bottom:4px}
+.inst{font-size:13.5px;color:var(--muted)}
+.edu-right{text-align:right;flex-shrink:0}
+.date{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent2)}
+.grade{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* ============================================================
+   CONTACT SECTION — PREMIUM 3D ICONS
+   ============================================================ */
+#contact{padding-bottom:120px}
+
+.contact-intro{text-align:center;margin-bottom:72px}
+.contact-intro h2{
+  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-size:clamp(28px,5vw,44px);letter-spacing:-.5px;margin-bottom:16px;
+}
+.contact-intro h2 .grad{
+  background:linear-gradient(100deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.contact-intro p{
+  font-size:15.5px;color:var(--muted);line-height:1.7;
+  max-width:520px;margin:0 auto;
+}
+
+/* Icon row */
+.contact-icons-row{
+  display:flex;justify-content:center;align-items:flex-start;
+  gap:52px;flex-wrap:wrap;margin-bottom:64px;
+}
+
+/* Each icon link */
+.contact-icon-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+  text-decoration:none;color:inherit;position:relative;
+}
+.contact-icon-wrap:focus-visible{
+  outline:2px solid var(--accent);outline-offset:10px;border-radius:var(--radius);
+}
+
+/* 3D Icon Box */
+.icon-3d{
+  width:124px;height:124px;border-radius:28px;
+  position:relative;cursor:pointer;
+  transform-style:preserve-3d;will-change:transform;
+  transition:
+    transform .4s cubic-bezier(.175,.885,.32,1.275),
+    box-shadow .4s ease;
+}
+
+/* ── Email ── */
+.icon-3d.email{
+  background:linear-gradient(145deg,#2e1d45 0%,#1c1032 50%,#0e0820 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.06),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 16px 48px rgba(140,111,255,.22),
+    0 4px 14px rgba(0,0,0,.65),
+    0 1px 0 rgba(255,255,255,.07);
+  border:1px solid rgba(140,111,255,.28);
+}
+
+/* ── GitHub ── */
+.icon-3d.github{
+  background:linear-gradient(145deg,#1c2030 0%,#111828 50%,#060c18 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.06),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 16px 48px rgba(120,165,255,.18),
+    0 4px 14px rgba(0,0,0,.65),
+    0 1px 0 rgba(255,255,255,.07);
+  border:1px solid rgba(100,150,255,.22);
+}
+
+/* ── LinkedIn ── */
+.icon-3d.linkedin{
+  background:linear-gradient(145deg,#0e2540 0%,#091828 50%,#040e1a 100%);
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.06),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 16px 48px rgba(0,120,215,.22),
+    0 4px 14px rgba(0,0,0,.65),
+    0 1px 0 rgba(255,255,255,.07);
+  border:1px solid rgba(0,119,181,.3);
+}
+
+/* Specular highlight overlay */
+.icon-3d::before{
+  content:'';position:absolute;inset:0;border-radius:28px;
+  background:linear-gradient(135deg,rgba(255,255,255,.1) 0%,transparent 55%);
+  pointer-events:none;z-index:1;
+}
+
+/* Bottom ground shadow */
+.icon-3d::after{
+  content:'';position:absolute;bottom:-18px;left:50%;
+  transform:translateX(-50%);
+  width:68%;height:18px;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,.45) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+/* SVG inside */
+.icon-3d svg{
+  width:56px;height:56px;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  filter:drop-shadow(0 2px 8px rgba(0,0,0,.55));
+  pointer-events:none;z-index:2;
+}
+
+/* Hover glow boost */
+.contact-icon-wrap:hover .icon-3d.email{
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.08),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 28px 70px rgba(140,111,255,.42),
+    0 10px 28px rgba(0,0,0,.55);
+}
+.contact-icon-wrap:hover .icon-3d.github{
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.08),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 28px 70px rgba(120,165,255,.36),
+    0 10px 28px rgba(0,0,0,.55);
+}
+.contact-icon-wrap:hover .icon-3d.linkedin{
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.08),
+    inset 0 -2px 0 rgba(0,0,0,.5),
+    0 28px 70px rgba(0,120,215,.42),
+    0 10px 28px rgba(0,0,0,.55);
+}
+
+/* Tooltip */
+.icon-tooltip{
+  position:absolute;bottom:calc(100% + 14px);left:50%;
+  transform:translateX(-50%) translateY(4px);
+  background:var(--text);color:#08070F;
+  padding:5px 13px;border-radius:8px;
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:12px;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .2s,transform .2s;z-index:10;
+}
+.icon-tooltip::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--text);
+}
+.contact-icon-wrap:hover .icon-tooltip,
+.contact-icon-wrap:focus-visible .icon-tooltip{
+  opacity:1;transform:translateX(-50%) translateY(0);
+}
+
+/* Icon label */
+.icon-meta{text-align:center;transition:transform .3s ease}
+.icon-name{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;margin-bottom:4px}
+.icon-handle{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted)}
+
+/* Contact footer */
+.contact-foot{
+  text-align:center;color:var(--muted);font-size:13.5px;line-height:1.7;
+  border-top:1px solid var(--line);padding-top:38px;
+}
+.contact-foot a{color:var(--accent);transition:color .2s}
+.contact-foot a:hover{color:var(--accent2)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer{
+  text-align:center;padding:32px 28px;
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  color:var(--muted);border-top:1px solid var(--line);
+  position:relative;z-index:2;
+}
+
+/* ============================================================
+   FOCUS / ACCESSIBILITY
+   ============================================================ */
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media(max-width:900px){
+  .avatar-3d-wrap{width:300px;height:300px;right:-80px;opacity:.3}
+  .hero-inner{max-width:420px}
+}
+@media(max-width:768px){
+  nav.links{display:none}
+  #navToggle{display:flex}
+  .avatar-3d-wrap{display:none}
+  .hero-inner{max-width:100%}
+  section.hero{padding-top:80px}
+  section{padding:80px 0}
+  .contact-icons-row{gap:24px}
+  .icon-3d{width:104px;height:104px;border-radius:24px}
+  .icon-3d svg{width:46px;height:46px}
+  .edu-row{flex-direction:column;gap:8px}
+  .edu-right{text-align:left}
+  .card-top{flex-direction:column}
+  .stat-row{gap:8px}
+}
+@media(max-width:480px){
+  .wrap{padding:0 20px}
+  section{padding:72px 0}
+  .contact-icons-row{gap:18px}
+  .icon-3d{width:92px;height:92px;border-radius:20px}
+  .icon-3d svg{width:40px;height:40px}
+  .icon-name{font-size:12.5px}
+  .icon-handle{font-size:10.5px}
+}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursorDot" aria-hidden="true"></div>
+<div id="cursorRing" aria-hidden="true"></div>
+
+<!-- Ambient background canvas -->
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
+
+<!-- ===================================================
+     NAVIGATION
+===================================================== -->
+<header class="nav" role="banner">
+  <div class="nav-inner">
+    <div class="logo" aria-label="Kunal Agrawal">KA<span>.</span></div>
+    <nav class="links" aria-label="Primary navigation">
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile nav -->
+<nav id="mobileNav" aria-label="Mobile navigation">
+  <a href="#skills" class="mobile-link">Skills</a>
+  <a href="#experience" class="mobile-link">Experience</a>
+  <a href="#projects" class="mobile-link">Projects</a>
+  <a href="#education" class="mobile-link">Education</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+</nav>
+
+<main>
+
+<!-- ========== HERO ========== -->
+<section class="hero" id="hero" aria-label="Introduction">
+  <div class="wrap">
+
+    <!-- 3D Avatar hero element -->
+    <div class="avatar-3d-wrap" aria-hidden="true">
+      <canvas id="avatarCanvas"></canvas>
+    </div>
+
+    <div class="hero-inner">
+      <div class="eyebrow" aria-hidden="true">
+        <span class="dot-live"></span>
+        Available for opportunities
+      </div>
+
+      <h1>
+        Kunal<br>
+        <span class="grad">Agrawal</span>
+      </h1>
+
+      <div class="role-line" aria-label="Software Engineer">
+        Software Engineer <span class="cursor-blink" aria-hidden="true"></span>
+      </div>
+
+      <p>
+        CS undergraduate at RIT Bengaluru. I build API-driven, AI-powered,
+        and distributed systems — from RAG pipelines to edge traffic controllers.
+      </p>
+
+      <div class="avatar-badge" aria-label="Profile: Kunal Agrawal, Bengaluru">
+        <div class="avatar-initials" aria-hidden="true">KA</div>
+        <span class="lbl">Kunal Agrawal · Bengaluru</span>
+        <div class="avatar-tip" aria-hidden="true">CS Student @ RIT</div>
+      </div>
+
+      <div class="stat-row" aria-label="Key achievements">
+        <div class="stat-chip"><b>9.53</b>/10 CGPA</div>
+        <div class="stat-chip"><b>3</b> shipped projects</div>
+        <div class="stat-chip"><b>25+</b> REST APIs</div>
+        <div class="stat-chip">🏆 SIH 2025 Runner-Up</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="scroll-hint" aria-hidden="true"><div class="bar"></div>SCROLL</div>
+</section>
+
+<!-- ========== SKILLS ========== -->
+<section id="skills" aria-labelledby="h-skills">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num" aria-hidden="true">01</span>
+      <h2 id="h-skills">Skills</h2>
+    </div>
+
+    <div class="skill-group reveal">
+      <div class="skill-label">Languages</div>
+      <div class="chips">
+        <span class="chip">C</span><span class="chip">C++</span><span class="chip">Java</span>
+        <span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">SQL</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-label">Frontend</div>
+      <div class="chips">
+        <span class="chip">HTML</span><span class="chip">CSS</span><span class="chip">React.js</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-label">Backend</div>
+      <div class="chips">
+        <span class="chip">Node.js</span><span class="chip">Express.js</span><span class="chip">FastAPI</span>
+        <span class="chip">REST APIs</span><span class="chip">JWT</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-label">Databases</div>
+      <div class="chips"><span class="chip">MongoDB</span><span class="chip">MySQL</span></div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-label">AI / ML</div>
+      <div class="chips">
+        <span class="chip">RAG</span><span class="chip">LLMs</span><span class="chip">Whisper</span>
+        <span class="chip">Gemini</span><span class="chip">Sentence-Transformers</span>
+        <span class="chip">Pinecone</span><span class="chip">ChromaDB</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-label">CS Fundamentals</div>
+      <div class="chips">
+        <span class="chip">Data Structures &amp; Algorithms</span><span class="chip">DBMS</span>
+        <span class="chip">Operating Systems</span><span class="chip">Computer Networks</span>
+        <span class="chip">OOP</span><span class="chip">Distributed Systems</span>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-label">Tools &amp; Other</div>
+      <div class="chips">
+        <span class="chip">Git</span><span class="chip">GitHub</span><span class="chip">Docker</span>
+        <span class="chip">Architectural Drawings</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EXPERIENCE ========== -->
+<section id="experience" aria-labelledby="h-exp">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num" aria-hidden="true">02</span>
+      <h2 id="h-exp">Work Experience</h2>
+    </div>
+    <article class="card reveal">
+      <div class="card-top">
+        <div>
+          <div class="card-title">Web Development Intern</div>
+          <div class="card-sub">LaunchED Global</div>
+        </div>
+        <div class="card-date">May 2025 – Jul 2025</div>
+      </div>
+      <ul>
+        <li>Collaborated with cross-functional teams to design and deliver high-quality web solutions using modern frontend technologies.</li>
+        <li>Implemented responsive frontend features with HTML, CSS, and JavaScript, focusing on usability and maintainable code.</li>
+        <li>Used Git and GitHub for version control and structured, team-based development workflows.</li>
+        <li>Participated in code reviews and applied best practices to improve code quality and reliability.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ========== PROJECTS ========== -->
+<section id="projects" aria-labelledby="h-proj">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num" aria-hidden="true">03</span>
+      <h2 id="h-proj">Projects</h2>
+    </div>
+
+    <article class="card reveal">
+      <div class="card-top">
+        <div>
+          <a class="card-title" href="https://github.com/RedPineapple-dev/NebulaStream-devOps" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;color:inherit;transition:color .2s;" aria-label="NebulaStream on GitHub (opens in new tab)">
+            NebulaStream <span style="font-size:13px;opacity:.6;">↗</span>
+          </a>
+          <div class="card-sub">AI-Driven Edge Traffic Control System</div>
+        </div>
+        <div class="card-date">Aug 2026</div>
+      </div>
+      <ul>
+        <li>Three regional Cloudflare Workers probe latency; a FastAPI control plane detects breaches, recalls similar past fixes from Milvus vector memory, and asks an LLM to propose new traffic weights — all automated.</li>
+        <li>Full pipeline: poll → detect breach → recall similar fix → LLM proposes weights → apply shift → monitor recovery → score outcome → store back in memory.</li>
+        <li>Integrated Prometheus, Grafana, Docker Compose, Helm, Kustomize, Pulumi, ArgoCD, and k6 for monitoring, deployment automation, and load validation.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Cloudflare Workers</span><span class="tag">FastAPI</span><span class="tag">WebSockets</span>
+        <span class="tag">Milvus</span><span class="tag">Ollama LLM</span><span class="tag">Docker</span>
+        <span class="tag">Grafana</span><span class="tag">ArgoCD</span><span class="tag">k6</span>
+      </div>
+    </article>
+
+    <article class="card reveal">
+      <div class="card-top">
+        <div>
+          <a class="card-title" href="https://github.com/RedPineapple-dev/Data-Sutra" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;color:inherit;transition:color .2s;" aria-label="Data-Sutra on GitHub (opens in new tab)">
+            Data-Sutra <span style="font-size:13px;opacity:.6;">↗</span>
+          </a>
+          <div class="card-sub">RAG-Based Intelligent Policy Assistant — SIH 2025</div>
+        </div>
+        <div class="card-date">Oct 2025</div>
+      </div>
+      <ul>
+        <li>Built for the Ministry of Education during Smart India Hackathon 2025 — national runner-up.</li>
+        <li>FastAPI backend with role-based auth (Head of Bureau &amp; Superadmin), PDF/policy document ingestion, and vector-search-powered AI chat for intelligent policy retrieval and analysis.</li>
+        <li>Integrated MongoDB Atlas for persistence and Pinecone / ChromaDB for semantic vector search across large government document corpora.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">FastAPI</span><span class="tag">RAG</span><span class="tag">Pinecone</span>
+        <span class="tag">ChromaDB</span><span class="tag">MongoDB</span><span class="tag">LLMs</span><span class="tag">JWT</span>
+      </div>
+    </article>
+
+    <article class="card reveal">
+      <div class="card-top">
+        <div>
+          <a class="card-title" href="https://github.com/RedPineapple-dev/InsightEd-MiniProject" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;color:inherit;transition:color .2s;" aria-label="InsightEd on GitHub (opens in new tab)">
+            InsightEd <span style="font-size:13px;opacity:.6;">↗</span>
+          </a>
+          <div class="card-sub">AI-Powered Video Annotation &amp; Adaptive Learning Platform</div>
+        </div>
+        <div class="card-date">2025</div>
+      </div>
+      <ul>
+        <li>EdTech SaaS that transforms lecture videos into guided learning experiences — Whisper transcription, AI concept annotations, PDF/PPTX slide alignment, and learner interaction analytics.</li>
+        <li>Full-stack: FastAPI backend with JWT auth, async MongoDB via Motor, and a React + Vite frontend with a live video workspace, annotation panel, and slide viewer.</li>
+        <li>Embedding pipeline with Sentence-Transformers (all-MiniLM-L6-v2) for hybrid semantic slide-to-segment alignment; Gemini API for AI-generated study decks and real-source recommendations.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">FastAPI</span><span class="tag">React</span><span class="tag">Vite</span>
+        <span class="tag">Whisper</span><span class="tag">Gemini</span><span class="tag">Sentence-Transformers</span>
+        <span class="tag">MongoDB</span><span class="tag">JWT</span>
+      </div>
+    </article>
+
+    <div class="achieve reveal" aria-label="Achievement: National Runner-Up, SIH 2025">
+      <div class="trophy" aria-hidden="true">🏆</div>
+      <div>
+        <b>National Runner-Up — Smart India Hackathon (SIH) 2025</b>
+        <span>Ministry of Education, Government of India</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== EDUCATION ========== -->
+<section id="education" aria-labelledby="h-edu">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-num" aria-hidden="true">04</span>
+      <h2 id="h-edu">Education</h2>
+    </div>
+    <div class="edu-row reveal">
+      <div class="edu-left">
+        <div class="deg">Bachelor of Technology in Computer Science</div>
+        <div class="inst">Ramaiah Institute of Technology, Bengaluru, Karnataka</div>
+      </div>
+      <div class="edu-right">
+        <div class="date">Oct 2023 – May 2027</div>
+        <div class="grade">CGPA 9.53/10</div>
+      </div>
+    </div>
+    <div class="edu-row reveal">
+      <div class="edu-left">
+        <div class="deg">Senior Secondary (12th CBSE) — PCM</div>
+        <div class="inst">Riverdale World School, India</div>
+      </div>
+      <div class="edu-right"><div class="date">Apr 2022 – May 2023</div></div>
+    </div>
+    <div class="edu-row reveal">
+      <div class="edu-left">
+        <div class="deg">Secondary (10th CBSE) — Science</div>
+        <div class="inst">N.H. Goel World School, India</div>
+      </div>
+      <div class="edu-right"><div class="date">Feb 2020 – Aug 2021</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section id="contact" aria-labelledby="h-contact">
+  <div class="wrap">
+
+    <div class="contact-intro reveal">
+      <h2 id="h-contact"><span class="grad">Let's Connect</span></h2>
+      <p>
+        I'm always open to interesting engineering problems,
+        new opportunities, and building useful products.
+      </p>
+    </div>
+
+    <!-- 3D Contact Icons -->
+    <div class="contact-icons-row reveal" aria-label="Contact links">
+
+      <!-- EMAIL -->
+      <a class="contact-icon-wrap"
+         href="mailto:kunal.agr69@gmail.com"
+         aria-label="Send email to kunal.agr69@gmail.com"
+         id="contact-email">
+        <div class="icon-tooltip" aria-hidden="true">Open email client</div>
+        <div class="icon-3d email" id="icon3d-email">
+          <!-- Envelope SVG -->
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="envBody" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#C8B4FF"/>
+                <stop offset="100%" stop-color="#8C6FFF"/>
+              </linearGradient>
+              <linearGradient id="envFlap" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#E2D8FF"/>
+                <stop offset="100%" stop-color="#A898F5"/>
+              </linearGradient>
+              <filter id="envShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="rgba(140,111,255,.55)"/>
+              </filter>
+            </defs>
+            <!-- Body -->
+            <rect x="7" y="16" width="42" height="28" rx="4" fill="url(#envBody)" filter="url(#envShadow)"/>
+            <!-- Flap V -->
+            <path d="M7 16 L28 31 L49 16" stroke="url(#envFlap)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <!-- Side fold left -->
+            <path d="M7 44 L20 30" stroke="rgba(255,255,255,.22)" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- Side fold right -->
+            <path d="M49 44 L36 30" stroke="rgba(255,255,255,.22)" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- Shine spot -->
+            <ellipse cx="13" cy="19.5" rx="4" ry="1.8" fill="rgba(255,255,255,.22)" transform="rotate(-18 13 19.5)"/>
+          </svg>
+        </div>
+        <div class="icon-meta">
+          <div class="icon-name">Email</div>
+          <div class="icon-handle">kunal.agr69@gmail.com</div>
+        </div>
+      </a>
+
+      <!-- GITHUB -->
+      <a class="contact-icon-wrap"
+         href="https://github.com/RedPineapple-dev"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Visit GitHub profile RedPineapple-dev (opens in new tab)"
+         id="contact-github">
+        <div class="icon-tooltip" aria-hidden="true">GitHub Profile ↗</div>
+        <div class="icon-3d github" id="icon3d-github">
+          <!-- GitHub mark SVG -->
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="ghFill" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#C0D4FF"/>
+                <stop offset="100%" stop-color="#7AAAF0"/>
+              </linearGradient>
+              <filter id="ghShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="rgba(100,160,255,.5)"/>
+              </filter>
+            </defs>
+            <path fill="url(#ghFill)" filter="url(#ghShadow)" d="
+              M28 6C16.95 6 8 14.95 8 26c0 8.84 5.73 16.34 13.67 18.99.99.18
+              1.36-.43 1.36-.97 0-.47-.02-1.73-.03-3.4-5.56 1.21-6.73-2.68-6.73-2.68
+              -.91-2.31-2.22-2.93-2.22-2.93-1.82-1.24.14-1.22.14-1.22
+              2.01.14 3.07 2.07 3.07 2.07 1.79 3.06 4.68 2.17 5.83 1.66
+              .18-1.29.7-2.17 1.27-2.67-4.44-.5-9.1-2.22-9.1-9.87
+              0-2.18.78-3.97 2.06-5.37-.21-.5-.89-2.54.2-5.28 0 0 1.68-.54 5.5 2.06
+              a19.14 19.14 0 015.01-.67c1.7.01 3.41.23 5.01.67 3.82-2.6 5.5-2.06
+              5.5-2.06 1.09 2.74.41 4.78.2 5.28 1.28 1.4 2.06 3.19 2.06 5.37
+              0 7.67-4.67 9.36-9.12 9.86.72.62 1.36 1.83 1.36 3.68 0 2.66-.02
+              4.79-.02 5.44 0 .53.36 1.15 1.37.96C34.28 42.32 40 34.83 40 26
+              c0-11.05-8.95-20-20-20z"
+            />
+            <ellipse cx="19" cy="12" rx="3.5" ry="1.6" fill="rgba(255,255,255,.2)" transform="rotate(-22 19 12)"/>
+          </svg>
+        </div>
+        <div class="icon-meta">
+          <div class="icon-name">GitHub</div>
+          <div class="icon-handle">RedPineapple-dev</div>
+        </div>
+      </a>
+
+      <!-- LINKEDIN -->
+      <a class="contact-icon-wrap"
+         href="https://linkedin.com/in/kunal-agrawal-b85284358"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Visit LinkedIn profile kunal-agrawal (opens in new tab)"
+         id="contact-linkedin">
+        <div class="icon-tooltip" aria-hidden="true">LinkedIn Profile ↗</div>
+        <div class="icon-3d linkedin" id="icon3d-linkedin">
+          <!-- LinkedIn mark SVG -->
+          <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="liBg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#55AAFF"/>
+                <stop offset="100%" stop-color="#0077B5"/>
+              </linearGradient>
+              <filter id="liShadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="3" stdDeviation="3.5" flood-color="rgba(0,119,181,.6)"/>
+              </filter>
+            </defs>
+            <!-- Rounded square -->
+            <rect x="6" y="6" width="44" height="44" rx="9" fill="url(#liBg)" filter="url(#liShadow)"/>
+            <!-- Top shine overlay -->
+            <rect x="6" y="6" width="44" height="20" rx="9" fill="rgba(255,255,255,.09)"/>
+            <!-- Shine ellipse -->
+            <ellipse cx="14" cy="11" rx="4.5" ry="2" fill="rgba(255,255,255,.22)" transform="rotate(-20 14 11)"/>
+            <!-- "in" white mark -->
+            <!-- dot above i -->
+            <circle cx="17" cy="19.5" r="3" fill="white" opacity=".95"/>
+            <!-- i bar -->
+            <rect x="14" y="24" width="6" height="16" rx="2" fill="white" opacity=".95"/>
+            <!-- n bar (left vertical) -->
+            <rect x="24" y="24" width="6" height="16" rx="2" fill="white" opacity=".95"/>
+            <!-- n arch -->
+            <path d="M30 28 Q30 23 35.5 23 Q41 23 41 28.5 L41 40" stroke="white" stroke-width="6" stroke-linecap="round" fill="none" opacity=".95"/>
+          </svg>
+        </div>
+        <div class="icon-meta">
+          <div class="icon-name">LinkedIn</div>
+          <div class="icon-handle">kunal-agrawal</div>
+        </div>
+      </a>
+
+    </div><!-- /.contact-icons-row -->
+
+    <div class="contact-foot reveal">
+      <p>Reach me directly at <a href="mailto:kunal.agr69@gmail.com">kunal.agr69@gmail.com</a></p>
+      <p style="margin-top:8px;">Based in <strong>Bengaluru, Karnataka, India</strong></p>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer role="contentinfo">
+  designed &amp; built by Kunal Agrawal — &copy; 2026
+</footer>
+
+<script>
+'use strict';
+
+/* ============================================================
+   WEBGL DETECTION
+   ============================================================ */
+function supportsWebGL() {
+  try {
+    const c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext &&
+      (c.getContext('webgl') || c.getContext('experimental-webgl')));
+  } catch(e) { return false; }
+}
+const HAS_WEBGL = supportsWebGL();
+const REDUCED   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+(function() {
+  const dot = document.getElementById('cursorDot');
+  const ring = document.getElementById('cursorRing');
+  if (!dot || !ring || REDUCED) return;
+
+  let mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+
+  window.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+  });
+
+  (function loop() {
+    rx += (mx-rx)*0.14; ry += (my-ry)*0.14;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+
+  document.querySelectorAll('a,button,.chip,.card,.avatar-badge,.icon-3d,.stat-chip').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+  document.addEventListener('mousedown', () => ring.classList.add('click'));
+  document.addEventListener('mouseup',   () => ring.classList.remove('click'));
+})();
+
+/* ============================================================
+   MOBILE NAV
+   ============================================================ */
+(function() {
+  const toggle = document.getElementById('navToggle');
+  const nav    = document.getElementById('mobileNav');
+  if (!toggle || !nav) return;
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(open));
+    nav.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  });
+
+  nav.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+})();
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+gsap.registerPlugin(ScrollTrigger);
+
+if (!REDUCED) {
+  gsap.utils.toArray('.reveal').forEach((el, i) => {
+    gsap.to(el, {
+      opacity: 1, y: 0, duration: 0.85, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 86%' },
+      delay: (i % 5) * 0.05
+    });
+  });
+} else {
+  document.querySelectorAll('.reveal').forEach(el => {
+    el.style.opacity = '1'; el.style.transform = 'none';
+  });
+}
+
+/* ============================================================
+   AMBIENT BG PARTICLES
+   ============================================================ */
+(function() {
+  if (!HAS_WEBGL || REDUCED) {
+    const c = document.getElementById('bgCanvas');
+    if (c) c.style.display = 'none';
+    return;
+  }
+
+  const canvas = document.getElementById('bgCanvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+  renderer.setSize(innerWidth, innerHeight);
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 100);
+  camera.position.z = 12;
+
+  const N = 180;
+  const pos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    pos[i*3]   = (Math.random()-.5)*32;
+    pos[i*3+1] = (Math.random()-.5)*32;
+    pos[i*3+2] = (Math.random()-.5)*22;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const mat = new THREE.PointsMaterial({ color: 0x8C6FFF, size: 0.04, transparent: true, opacity: 0.5 });
+  const pts = new THREE.Points(geo, mat);
+  scene.add(pts);
+
+  (function loop() {
+    requestAnimationFrame(loop);
+    pts.rotation.y += 0.0005;
+    pts.rotation.x += 0.0002;
+    renderer.render(scene, camera);
+  })();
+
+  window.addEventListener('resize', () => {
+    renderer.setSize(innerWidth, innerHeight);
+    camera.aspect = innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+  });
+})();
+
+/* ============================================================
+   3D AVATAR — Hero
+   ============================================================ */
+(function() {
+  const canvas = document.getElementById('avatarCanvas');
+  if (!canvas || !HAS_WEBGL || REDUCED) {
+    if (canvas) canvas.style.display = 'none';
+    return;
+  }
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  const S = canvas.offsetWidth || 480;
+  renderer.setSize(S, S, false);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  camera.position.z = 7;
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // Lighting
+  scene.add(new THREE.AmbientLight(0x9080FF, 0.3));
+  const key = new THREE.DirectionalLight(0xDDD4FF, 1.7);
+  key.position.set(3, 4, 5); scene.add(key);
+  const fill = new THREE.DirectionalLight(0xFF8A5B, 0.5);
+  fill.position.set(-4, -1, 3); scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xBBCCFF, 0.4);
+  rim.position.set(0, 3, -5); scene.add(rim);
+
+  // Main sphere
+  const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(1.5, 64, 64),
+    new THREE.MeshStandardMaterial({ color: 0x1a1030, roughness: 0.1, metalness: 0.88 })
+  );
+  group.add(sphere);
+
+  // Orbital ring 1
+  const ring1 = new THREE.Mesh(
+    new THREE.TorusGeometry(1.9, 0.022, 16, 120),
+    new THREE.MeshBasicMaterial({ color: 0x8C6FFF, transparent: true, opacity: 0.55 })
+  );
+  ring1.rotation.x = Math.PI/2;
+  group.add(ring1);
+
+  // Orbital ring 2
+  const ring2 = new THREE.Mesh(
+    new THREE.TorusGeometry(2.12, 0.014, 12, 120),
+    new THREE.MeshBasicMaterial({ color: 0xFF8A5B, transparent: true, opacity: 0.3 })
+  );
+  ring2.rotation.x = Math.PI*0.42;
+  ring2.rotation.z = Math.PI*0.2;
+  group.add(ring2);
+
+  // Wireframe overlay
+  const icoGeo  = new THREE.IcosahedronGeometry(1.53, 2);
+  const wireMesh = new THREE.LineSegments(
+    new THREE.EdgesGeometry(icoGeo),
+    new THREE.LineBasicMaterial({ color: 0x8C6FFF, transparent: true, opacity: 0.18 })
+  );
+  group.add(wireMesh);
+
+  // Orbiting dots
+  const nArr = [];
+  for (let i = 0; i < 30; i++) {
+    const theta = Math.random()*Math.PI*2;
+    const phi   = Math.acos(2*Math.random()-1);
+    const r = 2.2 + Math.random()*0.4;
+    nArr.push(r*Math.sin(phi)*Math.cos(theta), r*Math.sin(phi)*Math.sin(theta), r*Math.cos(phi));
+  }
+  const nGeo = new THREE.BufferGeometry();
+  nGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(nArr), 3));
+  const dots = new THREE.Points(nGeo,
+    new THREE.PointsMaterial({ color: 0xFF8A5B, size: 0.065, transparent: true, opacity: 0.85 }));
+  group.add(dots);
+
+  let tRX = 0, tRY = 0, elapsed = 0;
+  window.addEventListener('mousemove', e => {
+    tRY =  ((e.clientX/innerWidth )*2-1)*0.45;
+    tRX =  ((e.clientY/innerHeight)*2-1)*0.3;
+  });
+
+  (function loop() {
+    requestAnimationFrame(loop);
+    elapsed += 0.012;
+    group.rotation.y += (tRY - group.rotation.y)*0.035;
+    group.rotation.x += (tRX - group.rotation.x)*0.035;
+    group.position.y  = Math.sin(elapsed)*0.08;
+    ring1.rotation.z += 0.003;
+    ring2.rotation.z -= 0.002;
+    ring2.rotation.y += 0.001;
+    wireMesh.rotation.y -= 0.003;
+    dots.rotation.y    += 0.006;
+    renderer.render(scene, camera);
+  })();
+
+  window.addEventListener('resize', () => {
+    const s = canvas.offsetWidth || 480;
+    renderer.setSize(s, s, false);
+  });
+})();
+
+/* ============================================================
+   3D ICON TILT (parallax mouse effect)
+   ============================================================ */
+(function() {
+  if (REDUCED) return;
+
+  document.querySelectorAll('.contact-icon-wrap').forEach(wrap => {
+    const icon = wrap.querySelector('.icon-3d');
+    if (!icon) return;
+
+    let bounds = null, hovering = false;
+
+    wrap.addEventListener('mouseenter', () => {
+      bounds = icon.getBoundingClientRect();
+      hovering = true;
+    });
+
+    wrap.addEventListener('mouseleave', () => {
+      hovering = false;
+      icon.style.transform = '';
+    });
+
+    wrap.addEventListener('mousemove', e => {
+      if (!hovering || !bounds) return;
+      bounds = icon.getBoundingClientRect();
+      const cx = bounds.left + bounds.width/2;
+      const cy = bounds.top  + bounds.height/2;
+      const dx = Math.max(-1, Math.min(1, (e.clientX - cx) / (bounds.width/2)));
+      const dy = Math.max(-1, Math.min(1, (e.clientY - cy) / (bounds.height/2)));
+
+      icon.style.transform =
+        `translateY(-8px) scale(1.04) perspective(600px) rotateX(${dy*-14}deg) rotateY(${dx*14}deg)`;
+    });
+
+    window.addEventListener('scroll', () => {
+      if (hovering) bounds = icon.getBoundingClientRect();
+    }, { passive: true });
+  });
+})();
+
+/* ============================================================
+   MAGNETIC LABEL EFFECT
+   ============================================================ */
+(function() {
+  if (REDUCED) return;
+
+  document.querySelectorAll('.contact-icon-wrap').forEach(wrap => {
+    const meta = wrap.querySelector('.icon-meta');
+    if (!meta) return;
+
+    wrap.addEventListener('mousemove', e => {
+      const r  = wrap.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width/2))  / r.width  * 6;
+      const dy = (e.clientY - (r.top  + r.height/2)) / r.height * 4;
+      meta.style.transform = `translate(${dx}px,${dy}px)`;
+    });
+    wrap.addEventListener('mouseleave', () => {
+      meta.style.transform = '';
+    });
+  });
+})();
+
+/* ============================================================
+   ACTIVE NAV HIGHLIGHT
+   ============================================================ */
+(function() {
+  const links = document.querySelectorAll('nav.links a');
+  const obs   = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(a => {
+          a.style.color = a.getAttribute('href') === '#' + e.target.id
+            ? 'var(--text)' : '';
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+
+  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
+})();
+</script>
+</body>
+</html>
